@@ -1,15 +1,20 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import Banner from './Banner/Banner';
+import InfoCards from './InfoCards/InfoCards';
+import Services from './Services/Services';
+import ExceptionalDental from './ExceptionalDental/ExceptionalDental';
+import MakeAppointment from './Services/MakeAppointment/MakeAppointment';
+import Testimonial from './Testimonial/Testimonial';
 
 const Home = () => {
     return (
         <div>
-            <Helmet>
-                <meta charSet="utf-8"  />
-                <title>My doctors house</title>
-                <link rel="canonical" href="http://mysite.com/example" />
-            </Helmet>
-            <h1>Home page</h1>
+            <Banner></Banner>
+            <InfoCards></InfoCards>
+            <Services></Services>
+            <ExceptionalDental></ExceptionalDental>
+            <MakeAppointment></MakeAppointment>
+            <Testimonial></Testimonial>
         </div>
     );
 };
