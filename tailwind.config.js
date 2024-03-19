@@ -7,7 +7,7 @@ export default {
   daisyui: {
     themes: [
       {
-        doctortheme: {
+        doctorTheme: {
           primary: "#0FCFEC",
           secondary: "#19D3AE",
           accent: "#3A4256",
@@ -16,10 +16,6 @@ export default {
         }
       }
     ]
-  },
-
-  theme: {
-    extend: {},
   },
   plugins: [require("daisyui")],
 }
