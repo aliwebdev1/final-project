@@ -1,7 +1,12 @@
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../../../Context/UserContext';
+import Swal from 'sweetalert2';
 
-const BookingModal = ({ selectedDate, treatment, setTreatment }) => {
+const BookingModal = ({ selectedDate, treatment, setTreatment, refetch }) => {
+
+    const { user } = useContext(AuthContext);
+    // console.log(user);
 
     const date = format(selectedDate, 'PP')
     const { name, slots } = treatment;
@@ -23,9 +28,36 @@ const BookingModal = ({ selectedDate, treatment, setTreatment }) => {
             number,
             email,
         }
-        console.log(booking);
+        // console.log(booking);
+        fetch('http://localhost:3000/bookings', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.acknowledged) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Booking Confirmed',
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    })
+                    refetch()
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: `${data.message}`,
+                        icon: 'error',
+                        confirmButtonText: 'Close'
+                    })
+                }
+            })
 
-        // send the booking in backend
+
         setTreatment(null)
 
     }
@@ -53,17 +85,15 @@ const BookingModal = ({ selectedDate, treatment, setTreatment }) => {
                             }
                         </select>
 
-                        <input type="text" required name='fullName' placeholder="Full Name" className="my-3 input input-bordered w-full " />
+                        <input defaultValue={user.displayName} type="text" required name='fullName' placeholder="Full Name" className="my-3 input input-bordered w-full " />
 
                         <input type="number" required name='number' placeholder="Phone Number" className="my-3 input input-bordered w-full " />
 
-                        <input type="email" name='email' required placeholder="emaiil" className="my-3 input input-bordered w-full " />
+                        <input defaultValue={user.email} type="email" name='email' required placeholder="email" className="my-3 input input-bordered w-full " />
 
                         <input type='submit' value="SUBMIT" className="mt-3 w-full btn btn-md bg-accent text-base-100 border-0 font-bold" />
 
                     </form>
-
-
                 </div>
             </div>
 

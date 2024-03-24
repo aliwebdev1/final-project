@@ -1,22 +1,62 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Context/UserContext';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
 
-    const userInfo = useContext(AuthContext)
-    console.log(userInfo);
+    const { createUser, updateUserName, googleLogin } = useContext(AuthContext)
+    const [authError, SetAuthError] = useState('')
+
+    // console.log(createUser);
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
     const handleSignUp = (data) => {
         console.log(data);
+        createUser(data.email, data.password)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                if (user) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Your account has been created',
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    })
+                }
+                updateUserName(data.name)
+
+            })
+            .then(error => {
+                SetAuthError(error.message)
+            })
 
     }
 
+    const handleGoogleLogin = () => {
+        googleLogin()
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                if (user) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Your account has been created By using Google',
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    })
+                }
+            })
+            .then(error => {
+                SetAuthError(error.message)
+            })
+    }
+
     return (
-        <div className="hero min-h-screen ">
+        < div className="hero min-h-screen " >
             <div className="hero-content flex-col ">
 
                 <div className="card shrink-0 w-96  shadow-2xl bg-base-100">
@@ -63,16 +103,19 @@ const SignUp = () => {
                             <button type='submit' className="btn btn-accent">SIGN UP</button>
                         </div>
 
+                        {authError && <p className='text-red-500'>{authError}</p>}
+
                         <p className='text-sm text-center mt-2'>Already Have an account? <Link className='text-primary' to='/login'>Please Login</Link> </p>
                         <div className="divider">OR</div>
 
                         <div className="form-control ">
-                            <button className="btn btn-outline btn-accent">CONTINUE WITH GOOGLE</button>
+                            <button onClick={handleGoogleLogin} className="btn btn-outline btn-accent">CONTINUE WITH GOOGLE</button>
                         </div>
+
                     </form>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

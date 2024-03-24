@@ -6,12 +6,13 @@ import BookingModal from '../BookingModal/BookingModal';
 
 const AvailableAppointment = ({ selectedDate }) => {
 
+    const date = format(selectedDate, 'PP')
     const [treatment, setTreatment] = useState({})
 
-    const { data: appointOptions = [] } = useQuery({
-        queryKey: 'appointmentOptions',
+    const { data: appointOptions = [], refetch } = useQuery({
+        queryKey: ['appointmentOptions', date],
         queryFn: async () => {
-            const res = await fetch("appointmentOptions.json");
+            const res = await fetch(`http://localhost:3000/appointmentOptions?date=${date}`);
             const data = res.json();
             return data;
         }
@@ -39,6 +40,7 @@ const AvailableAppointment = ({ selectedDate }) => {
                     selectedDate={selectedDate}
                     treatment={treatment}
                     setTreatment={setTreatment}
+                    refetch={refetch}
                 ></BookingModal>
             }
 

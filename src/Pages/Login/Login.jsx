@@ -1,12 +1,57 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/UserContext';
+import Swal from 'sweetalert2';
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm()
-    const handleLogin = (data) => {
-        console.log(data);
+    const { userSignIn, googleLogin } = useContext(AuthContext)
+    const [loginError, SetLoginError] = useState('')
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/'
+
+    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    const handleLogin = (data) => {
+        userSignIn(data.email, data.password)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                if (user) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Login In Successfully Done',
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    })
+                }
+                navigate(from, { replace: true })
+
+            })
+            .then(error => {
+                SetLoginError(error.message)
+            })
+    }
+
+    const handleGoogleLogin = () => {
+        googleLogin()
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                if (user) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Your account has been created By using Google',
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    })
+                }
+            })
+            .then(error => {
+                SetAuthError(error.message)
+            })
     }
 
     return (
@@ -45,11 +90,14 @@ const Login = () => {
                         <div className="form-control mt-6">
                             <button className="btn btn-accent">LOGIN</button>
                         </div>
+
+                        {loginError && <p className='text-red-500'>{loginError}</p>}
+
                         <p className='text-sm text-center mt-2'>New to Doctors Portal? <Link className='text-primary' to='/sign-up'>Create new account</Link> </p>
                         <div className="divider">OR</div>
 
                         <div className="form-control ">
-                            <button type='submit' className="btn btn-outline btn-accent">CONTINUE WITH GOOGLE</button>
+                            <button onClick={handleGoogleLogin} className="btn btn-outline btn-accent">CONTINUE WITH GOOGLE</button>
                         </div>
                     </form>
                 </div>
