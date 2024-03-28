@@ -18,7 +18,7 @@ const SignUp = () => {
         createUser(data.email, data.password)
             .then(result => {
                 const user = result.user;
-                console.log(user);
+
                 if (user) {
                     Swal.fire({
                         title: 'Success!',
@@ -27,7 +27,14 @@ const SignUp = () => {
                         confirmButtonText: 'Close'
                     })
                 }
-                updateUserName(data.name)
+                updateUserName(data.name);
+                const createUsersObject = {
+                    name: user.displayName,
+                    email: user.email
+                }
+                console.log(user);
+                // call the api post function
+                saveTheUser(createUsersObject)
 
             })
             .then(error => {
@@ -35,6 +42,23 @@ const SignUp = () => {
             })
 
     }
+
+    const saveTheUser = (userObject) => {
+        console.log(userObject);
+        fetch('http://localhost:3000/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(userObject)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            })
+    }
+
+
 
     const handleGoogleLogin = () => {
         googleLogin()
