@@ -16,11 +16,11 @@ const AllUsers = () => {
         // const agree = window.confirm(`Are you want to delete ${user.email}`)
         // if (agree) {
         //     console.log('yes....');
-        // }
+        // } ALI1234$
 
         Swal.fire({
             title: "Are you sure?",
-            text: `Are you want to ${user.email} this User!`,
+            text: `Are you want to delete ${user?.name}?`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -36,7 +36,7 @@ const AllUsers = () => {
                         if (data.deletedCount > 0) {
                             Swal.fire({
                                 title: "Deleted!",
-                                text: "Your User has been deleted.",
+                                text: `${user?.name} has been deleted`,
                                 icon: "success"
                             });
                             // update ui re again
@@ -46,10 +46,33 @@ const AllUsers = () => {
             }
         });
 
+    }
 
+    const handleMakeAdmin = (user) => {
+        fetch(`http://localhost:3000/users/admin/${user._id}`, {
+            method: 'PUT',
+        })
+            .then(res => res.json())
+            .then(data => {
 
-
-
+                if (data.modifiedCount > 0) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: `Congratulation ${user?.name} now you are admin`,
+                        icon: 'success',
+                        confirmButtonText: 'Close'
+                    })
+                    refetch()
+                }
+                else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: `${data.message}`,
+                        icon: 'error',
+                        confirmButtonText: 'Close'
+                    })
+                }
+            })
 
     }
 
@@ -75,7 +98,7 @@ const AllUsers = () => {
                             users.map((user, i) => <tr>
                                 <th>{i + 1}</th>
                                 <td>{user?.email}</td>
-                                <td><button className='btn btn-outline btn-sm'>Make Admin</button></td>
+                                <td>{user?.role == 'admin' ? <p>Admin</p> : <button onClick={() => handleMakeAdmin(user)} className='btn btn-outline btn-sm'>Make Admin</button>}</td>
                                 <td><button onClick={() => deleteUser(user)} className="btn btn-outline btn-sm btn-error">Remove User</button></td>
                             </tr>)
                         }

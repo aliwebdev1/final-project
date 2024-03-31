@@ -27,24 +27,24 @@ const SignUp = () => {
                         confirmButtonText: 'Close'
                     })
                 }
-                updateUserName(data.name);
-                const createUsersObject = {
-                    name: user.displayName,
-                    email: user.email
-                }
-                console.log(user);
+                updateUserName(data.name)
+                    .then(() => {
+                        saveTheUser(data.name, data.email)
+                    })
+                    .catch(err => console.log(err))
+
                 // call the api post function
-                saveTheUser(createUsersObject)
+
 
             })
-            .then(error => {
+            .catch(error => {
                 SetAuthError(error.message)
             })
 
     }
 
-    const saveTheUser = (userObject) => {
-        console.log(userObject);
+    const saveTheUser = (name, email) => {
+        const userObject = { name, email }
         fetch('http://localhost:3000/users', {
             method: 'POST',
             headers: {

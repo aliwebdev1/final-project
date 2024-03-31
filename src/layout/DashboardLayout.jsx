@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Header from '../Pages/Shared/Header/Header';
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import useAdmin from '../hooks/useAdmin';
+import { AuthContext } from '../Context/UserContext';
 
 const DashboardLayout = () => {
+    const { user } = useContext(AuthContext)
+    const [isAdmin] = useAdmin(user?.email)
     return (
         <div>
             <Header></Header>
@@ -19,10 +23,17 @@ const DashboardLayout = () => {
                     <ul className="menu p-0 w-80 min-h-full  text-base-content">
                         {/* Sidebar content here */}
                         <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard'>My Appointment</Link></li>
-                        <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard/all-users'>All Users</Link></li>
+                        {
+                            isAdmin && <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard/all-users'>All Users</Link></li>
+                        }
 
-                        <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard'>Add a Doctor</Link></li>
-                        <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard'>Manage Doctors</Link></li>
+                        {
+                            isAdmin && <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard/add-doctor'>Add a Doctor</Link></li>
+                        }
+
+                        {
+                            isAdmin && <li><Link className='rounded-none focus:bg-slate-100 ' to='/dashboard/manage-doctors'>Manage Doctors</Link></li>
+                        }
                         <li><Link className='rounded-none focus:bg-slate-100 ' to='/'>Home</Link></li>
 
 
