@@ -6,7 +6,7 @@ const useAdmin = (email) => {
 
     useEffect(() => {
         if (email) {
-            fetch(`http://localhost:3000/users/admin/${email}`)
+            fetch(`https://f23-3final-backend.vercel.app/users/admin/${email}`)
                 .then(res => res.json())
                 .then(data => {
                     setIsAdmin(data.isAdmin)

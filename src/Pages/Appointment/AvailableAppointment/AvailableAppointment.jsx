@@ -3,20 +3,25 @@ import { format } from 'date-fns';
 import React, { useState } from 'react';
 import AppointmentOption from './AppointmentOption';
 import BookingModal from '../BookingModal/BookingModal';
+import Loading from '../../../component/Loading/Loading';
 
 const AvailableAppointment = ({ selectedDate }) => {
 
     const date = format(selectedDate, 'PP')
     const [treatment, setTreatment] = useState({})
 
-    const { data: appointOptions = [], refetch } = useQuery({
+    const { data: appointOptions = [], refetch, isLoading } = useQuery({
         queryKey: ['appointmentOptions', date],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/appointmentOptions?date=${date}`);
+            const res = await fetch(`https://f23-3final-backend.vercel.app/appointmentOptions?date=${date}`);
             const data = res.json();
             return data;
         }
     })
+
+    if (isLoading) {
+        return <Loading></Loading>
+    }
 
     return (
         <div className='my-16'>

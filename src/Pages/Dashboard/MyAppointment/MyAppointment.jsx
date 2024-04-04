@@ -1,22 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 import { AuthContext } from '../../../Context/UserContext';
+import Loading from '../../../component/Loading/Loading';
 
 const MyAppointment = () => {
 
     const { user } = useContext(AuthContext);
     const email = user.email;
 
-    const { data: bookings = [] } = useQuery({
+    const { data: bookings = [], isLoading } = useQuery({
         queryKey: ['bookings', email],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:3000/bookings?email=${email}`);
+            const res = await fetch(`https://f23-3final-backend.vercel.app/bookings?email=${email}`);
             const data = res.json();
             return data;
         }
     })
 
 
+    if (isLoading) {
+        return <Loading></Loading>
+    }
 
     return (
         <div className='mb-5'>

@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
+import Loading from '../../../component/Loading/Loading';
 
 const AllUsers = () => {
 
-    const { data: users = [], refetch } = useQuery({
+    const { data: users = [], refetch, isLoading } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await fetch("http://localhost:3000/users");
+            const res = await fetch("https://f23-3final-backend.vercel.app/users");
             const data = res.json();
             return data;
         }
@@ -28,7 +29,7 @@ const AllUsers = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`http://localhost:3000/users/${user._id}`, {
+                fetch(`https://f23-3final-backend.vercel.app/users/${user._id}`, {
                     method: "DELETE",
                 })
                     .then(res => res.json())
@@ -49,7 +50,7 @@ const AllUsers = () => {
     }
 
     const handleMakeAdmin = (user) => {
-        fetch(`http://localhost:3000/users/admin/${user._id}`, {
+        fetch(`https://f23-3final-backend.vercel.app/users/admin/${user._id}`, {
             method: 'PUT',
         })
             .then(res => res.json())
@@ -76,6 +77,9 @@ const AllUsers = () => {
 
     }
 
+    if (isLoading) {
+        return <Loading></Loading>
+    }
 
     return (
         <div className='mb-5'>

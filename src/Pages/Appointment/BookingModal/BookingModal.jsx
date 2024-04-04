@@ -29,7 +29,7 @@ const BookingModal = ({ selectedDate, treatment, setTreatment, refetch }) => {
             email,
         }
         // console.log(booking);
-        fetch('http://localhost:3000/bookings', {
+        fetch('https://f23-3final-backend.vercel.app/bookings', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
